@@ -2,7 +2,6 @@ import { useKeyboardHandler } from 'react-native-keyboard-controller';
 import { useSharedValue } from 'react-native-reanimated';
 
 export function useInteractiveKeyboardHandler(onClose: () => void) {
-    const targetKeyboardHeight = useSharedValue(0);
     const keyboardHeight = useSharedValue(0);
     const keyboardProgress = useSharedValue(0);
     const interactiveProgress = useSharedValue<number|false>(false);
@@ -11,14 +10,11 @@ export function useInteractiveKeyboardHandler(onClose: () => void) {
         {
             onStart: (e) => {
                 'worklet';
-                console.log('onStart: ' + e.height);
-
-                // track the target keyboard height so we can throw out erroneous onEnd events (that sometimes occur too early)
-                targetKeyboardHeight.value = e.height;
+                console.log('onStart: ' + e.height + ' percent ' + e.progress);
             },
             onMove: (e) => {
                 'worklet';
-                console.log('onMove: ' + e.height);
+                console.log('onMove: ' + e.height + ' percent ' + e.progress);
 
                 if (e.height >= 0 && e.progress <= 1) {
                     keyboardHeight.value = e.height;
@@ -27,7 +23,7 @@ export function useInteractiveKeyboardHandler(onClose: () => void) {
             },
             onEnd: (e) => {
                 'worklet';
-                console.log('onEnd: ' + e.height);
+                console.log('onEnd: ' + e.height + ' percent ' + e.progress);
 
                 if (e.height >= 0 && e.progress <= 1) {
                     keyboardHeight.value = e.height;
@@ -36,7 +32,7 @@ export function useInteractiveKeyboardHandler(onClose: () => void) {
             },
             onInteractive: (e) => {
                 'worklet';
-                console.log('onInteractive: ' + e.height);
+                console.log('onInteractive: ' + e.height + ' percent ' + e.progress);
 
                 if (e.height >= 0 && e.progress <= 1) {
                     keyboardHeight.value = e.height;
